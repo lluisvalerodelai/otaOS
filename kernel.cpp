@@ -7,6 +7,9 @@ void printf(char *str) {
 	}
 }
 
+
+
+
 extern "C" void kernelMain() {
 	printf("hello world!");
   while (1) {

@@ -1,0 +1,5 @@
+
+# ignore all the built files
+*.o
+*.so
+*.bin
