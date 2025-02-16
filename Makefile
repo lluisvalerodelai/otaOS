@@ -1,20 +1,25 @@
-GPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore
-ASPARAMS = --32
-LDPARAMS = -melf_i386
+default: otaOS.iso
 
-objects = loader.o kernel.o
+multiboot_header.o: multiboot_header.asm
+	nasm -f elf64 multiboot_header.asm
 
-%.o : %.cpp
-	g++ $(GPPPARAMS) -o $@ -c $<
+boot.o: boot.asm
+	nasm -f elf64 boot.asm
 
-%.o : %.s
-	as $(ASPARAMS) -o $@ $<
+kernel.bin: multiboot_header.o boot.o
+	ld -n -o kernel.bin -T linker.ld multiboot_header.o boot.o
 
-mykernel.bin: linker.ld $(objects)
-	ld $(LDPARAMS) -T $< -o $@ $(objects)
+otaOS.iso: kernel.bin
+	mkdir -p isofiles/boot/grub
+	cp grub.cfg isofiles/boot/grub
+	cp kernel.bin isofiles/boot/
+	grub-mkrescue -o os.iso isofiles
 
-install: mykernel.bin
-	sudo cp $< /boot/mykernel.bin
+run: os.iso
+	qemu-system-x86_64 -cdrom os.iso
 
-clean: 
-	rm -f $(objects)
+clean:
+	rm -f *.o
+	rm -f *.bin
+	rm -rf isofiles
+	rm -f os.iso
