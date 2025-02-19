@@ -177,11 +177,11 @@ set_up_SSE:
 	// Enable SSE
 	movl	%cr0, %eax
 	andw	$0xFFFB, %ax		// Clear coprocessor emulation CR0.EM
-	orw	$0x2, %ax		// Set coprocessor monitoring CR0.MP
+	orw	$0x2, %ax					// Set coprocessor monitoring CR0.MP
 	movl	%eax, %cr0
 	movl	%cr4, %eax
-	orw	$3 << 9, %ax		// set CR4.OSFXSR and CR4.OSXMMEXCPT
-					//   at the same time
+	orw	$3 << 9, %ax			// set CR4.OSFXSR and CR4.OSXMMEXCPT
+												//   at the same time
 	movl	%eax, %cr4
 	ret
 
