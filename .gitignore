@@ -3,3 +3,4 @@ isofiles
 iso.img
 *.o
 *.elf
+otaOS

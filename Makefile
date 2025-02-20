@@ -1,30 +1,26 @@
-CC = gcc
-CFLAGS = -c -Wall -m64 -Og -nostdinc -ffreestanding
-LD = gcc
-LDFLAGS = -nostdlib -Wl,-n,-T,link.ld -no-pie
-RM = rm -fr
+CFLAGS = -m32 -fno-stack-protector -fno-builtin
+AFLAGS = -f elf32
+LFLAGS = -m elf_i386
 
-OBJS = boot.o mb2.o kmain.o
-OBJS_P = $(addprefix build/, $(OBJS))
-KERNEL = kmain.elf
+OBJS = boot.o kernel.o vga.o
+B_OBJS = $(addprefix build/, $(OBJS))
 
-build: $(OBJS) link.ld
-	$(LD) $(LDFLAGS) -o build/$(KERNEL) $(OBJS_P)
-	mkdir -p isofiles/boot/grub
-	cp build/$(KERNEL) isofiles/boot/
-	cp grub.cfg isofiles/boot/grub
-	grub-mkrescue -o iso.img isofiles
-
+build: $(OBJS) linker.ld
+	ld $(LFLAGS) -T linker.ld -o build/kernel $(B_OBJS)
+	mkdir -p otaOS/boot/grub
+	cp build/kernel otaOS/boot
+	cp grub.cfg otaOS/boot/grub
+	grub-mkrescue -o kernel.iso otaOS/
+	
 run:
-	qemu-system-x86_64 -no-reboot -drive format=raw,file=iso.img
+	qemu-system-i386 kernel.iso
 
 clean:
-	$(RM) build isofiles iso.img
+	rm -rf build kernel.iso
 
-.c.o:
+%.o : %.c
 	mkdir -p build
-	$(CC) $(CFLAGS) -o build/$@ $<
-
-.S.o:
+	gcc $(CFLAGS) -c $< -o build/$@
+%.o : %.s
 	mkdir -p build
-	$(CC) $(CFLAGS) -o build/$@ $<
+	nasm $(AFLAGS) $< -o build/$@
