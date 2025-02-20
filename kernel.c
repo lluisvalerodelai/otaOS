@@ -2,5 +2,5 @@
 
 void kmain(void) {
 	reset();
-	print("hello \n world!");
+	print("hello \nworld!");
 }
