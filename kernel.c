@@ -11,7 +11,7 @@ uint16 *vga = (uint16 *)0xB8000;
 void print(const char *str) {
 	int i = 0;
   while (str[i] != '\0') {
-    vga[curr_row * width + curr_col] = (0x0F << 8) | str[i];
+    vga[width * curr_row + curr_col] = (0x0F << 8) | str[i];
 		if (curr_col > 80) {
 			curr_col = 0;
 			curr_row= curr_row + 1;
@@ -23,10 +23,7 @@ void print(const char *str) {
 }
 
 void kmain() {
-  /* commands go here */
+	print("hello world!");
 
-	print("hello world! \n");
-
-  for (;;)
-    ; // safety final loop
+  for (;;); // extra safety loop
 }
