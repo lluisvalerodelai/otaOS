@@ -1,8 +1,8 @@
-CFLAGS = -m32 -fno-stack-protector -fno-builtin
+CFLAGS = -m32 -fno-stack-protector -fno-builtin -Wall -O -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-pie
 AFLAGS = -f elf32
 LFLAGS = -m elf_i386
 
-OBJS = boot.o kernel.o vga.o
+OBJS = boot.o kernel.o
 B_OBJS = $(addprefix build/, $(OBJS))
 
 build: $(OBJS) linker.ld
@@ -16,11 +16,11 @@ run:
 	qemu-system-i386 kernel.iso
 
 clean:
-	rm -rf build kernel.iso
+	rm -rf build kernel.iso otaOS
 
 %.o : %.c
 	mkdir -p build
 	gcc $(CFLAGS) -c $< -o build/$@
-%.o : %.s
+%.o : %.asm
 	mkdir -p build
 	nasm $(AFLAGS) $< -o build/$@
