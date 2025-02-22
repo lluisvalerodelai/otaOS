@@ -2,5 +2,6 @@
 
 void kmain(void) {
 	reset();
-	print("hello \nworld!");
+	print("GDT IS DONE \n");
+	print("hello \n world!");
 }
