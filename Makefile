@@ -5,7 +5,13 @@ LFLAGS = -m elf_i386
 BOOT_OBJS = boot.o
 BOOT_TARGETS = $(addprefix build/boot/, $(BOOT_OBJS))
 
-KERNEL_OBJS = sys.o vga.o global_descriptor_table.o interrupt_descriptor_table.o kernel.o 
+KERNEL_OBJS = \
+							sys.o vga.o \
+							global_descriptor_table.o \
+							interrupt_descriptor_table.o \
+							interrupt_service_routines_setup.o \
+							kernel.o
+
 KERNEL_TARGETS = $(addprefix build/kernel/, $(KERNEL_OBJS))
 
 LINK_OBJS = $(BOOT_TARGETS) $(KERNEL_TARGETS)
