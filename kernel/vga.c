@@ -51,7 +51,7 @@ void vga_print(const char *str) {
       continue;
     }
 
-    vga[curr_row * width + curr_col] = (0x07 << 8) | str[i]; // test setting str[i] to a uint64
+    vga[curr_row * width + curr_col] = (0x07 << 8) | str[i];
 
     if (curr_col == width - 1) {
       newline();

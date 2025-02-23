@@ -56,6 +56,11 @@ flush2:
 	ret  ;go back to the C code
 
 ; TODO add interrupt service routiunes here
+global idt_load
+extern idtp
+idt_load:
+	lidt [idtp]
+	ret
 
 ; define the stack (it grows downn)
 SECTION .bss
