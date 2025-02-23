@@ -1,8 +1,13 @@
 #include "types.h"
+#include "gdt.h"
 #include "vga.h"
 
 void kmain() {
-	vga_print("hello world!");
+	gdt_install();
+
+	vga_print("GDT SUCCESFULLY INSTALLED YAYAYYAY");
+	reset();
+	vga_print("reset the screen");
 
   for (;;); // extra safety loop
 }

@@ -2,14 +2,13 @@ CFLAGS = -m32 -fno-stack-protector -fno-builtin -Wall -O -fstrength-reduce -fomi
 AFLAGS = -f elf32
 LFLAGS = -m elf_i386
 
-BOOT_SRC = boot
-BOOT_BUILD = build/boot/boot.o
-BOOT_OBJ = boot/boot.asm
+BOOT_OBJS = boot.o
+BOOT_TARGETS = $(addprefix build/boot/, $(BOOT_OBJS))
 
-KERNEL_SRC = kernel
-KERNEL_OBJ = kernel/kernel.c kernel/vga.c
+KERNEL_OBJS = vga.o gdt.o kernel.o
+KERNEL_TARGETS = $(addprefix build/kernel/, $(KERNEL_OBJS))
 
-LINK_OBJS = build/boot/boot.o build/kernel/kernel.o build/kernel/vga.o
+LINK_OBJS = $(BOOT_TARGETS) $(KERNEL_TARGETS)
 
 build/boot/%.o: boot/%.asm
 	mkdir -p build/boot

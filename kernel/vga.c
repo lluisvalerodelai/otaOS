@@ -8,6 +8,26 @@ int curr_col = 0;
 
 uint16 *vga = (uint16 *)0xB8000;
 
+void reset() {
+	/* resets the screen, clears all text */
+	for (uint8 i = 0; i < height; i++) {
+		for (uint8 j = 0; j < width; j++) {
+			vga[width * i + j] = (uint16) 0; //vram works in 2 byte chunks
+		}
+	}
+
+	curr_col = 0;
+	curr_row = 0;
+}
+
+void scroll() {
+	
+}
+
+void newline() {
+
+}
+
 void vga_print(const char *str) {
 	int i = 0;
   while (str[i] != '\0') {

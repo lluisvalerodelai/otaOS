@@ -39,7 +39,22 @@ stublet:
 	call kmain
 	jmp $
 
-; TODO: add code for loading the GDT here
+; here we define the _gdt_flush function, which we call from C to setup the proper registers for gdt
+; loading the GDT
+global gdt_flush  ; C can access this as gdt_flush()
+extern gp
+gdt_flush:
+	lgdt [gp]
+	mov ax, 0x10 ; each entry is 2 bytes, the null entry is first so we need to preload the offset
+	mov ds, ax ; into all the necessary registers
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+	mov ss, ax
+	jmp 0x08:flush2  ;0x08 is the offset to our code segment
+flush2:
+	ret  ;go back to the C code
+
 ; TODO add interrupt service routiunes here
 
 ; define the stack (it grows downn)
