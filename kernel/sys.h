@@ -3,6 +3,8 @@
 
 void *memset_sys(void *dest, char val, int count);
 
+void outportb(unsigned short port, unsigned char data);
+
 struct regs {
   unsigned int gs, fs, es, ds; /* pushed the segs last */
   unsigned int edi, esi, ebp, esp, ebx, edx, ecx, eax; /* pushed by 'pusha' */
