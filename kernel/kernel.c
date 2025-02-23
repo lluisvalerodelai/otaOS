@@ -2,16 +2,21 @@
 #include "interrupt_descriptor_table.h"
 #include "interrupt_service_routines_setup.h"
 #include "interrupt_requests.h"
+#include "timer.h"
 #include "vga.h"
 
 void kmain() {
+
   gdt_install();
+  vga_print("GDT SUCCESFULLY INSTALLED\n");
+
   idt_init();
 	isrs_install();
 	irq_install();
 	__asm__ __volatile__ ("sti"); //FINALLY
+  vga_print("IDT SUCCESFULLY INSTALLED\n");
 
-  vga_print("GDT SUCCESFULLY INSTALLED\n");
+	timer_counter_install();
 
   vga_print("################################\n");
   vga_print("#           otaOS              #\n");

@@ -33,7 +33,7 @@ void scroll() {
 
 void newline() {
   // set the cursor on a newline, and scroll if necessary
-  if (curr_row == height - 1) {
+  if (curr_row >= height - 1) {
     scroll();
   }
   curr_col = 0;
