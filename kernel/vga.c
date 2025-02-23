@@ -1,5 +1,5 @@
-#include "system.h"
 #include "types.h"
+#include "vga.h"
 
 int width = 80;
 int height = 20;
@@ -8,7 +8,7 @@ int curr_col = 0;
 
 uint16 *vga = (uint16 *)0xB8000;
 
-void print(const char *str) {
+void vga_print(const char *str) {
 	int i = 0;
   while (str[i] != '\0') {
     vga[width * curr_row + curr_col] = (0x0F << 8) | str[i];
@@ -20,10 +20,4 @@ void print(const char *str) {
 		}
 		i++;
   }
-}
-
-void kmain() {
-	print("hello world!");
-
-  for (;;); // extra safety loop
 }
