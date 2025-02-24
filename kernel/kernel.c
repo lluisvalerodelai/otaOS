@@ -24,14 +24,7 @@ void kmain() {
 	
 	// vga_print((char *) ((int) "hello" / 0));
 
-  // vga_print("hello world! \nI just did a newline!");
-
-	vga_putc('h');
-	vga_putc('\n');
-	vga_putc('h');
-
-	reset();
-
+  vga_print("hello world! \nI just did a newline!");
 
   for (;;); // safety
 }
