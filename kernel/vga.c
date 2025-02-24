@@ -6,9 +6,31 @@ int height = 20;
 int curr_row = 0;
 int curr_col = 0;
 
-
-
 uint16 *vga = (uint16 *)0xB8000;
+
+/*moves the cursor over by one, checking for if we need to scroll & move down a line*/
+void update_cursor() {
+	if (curr_col == width - 1) {
+		curr_col = 0;
+		if (curr_row == height - 1) {
+			scroll();
+		} else {
+			curr_row += 1;
+		}
+	} else {
+		curr_col += 1;
+	}
+}
+
+void vga_putc(const char c) {
+	if (c == '\n') {
+		newline();
+		return;
+	}
+
+	vga[width * curr_row + curr_col] = (0x07 << 8) | c;
+	update_cursor();
+}
 
 void reset() {
   /* resets the screen, clears all text */

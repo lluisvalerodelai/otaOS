@@ -110,7 +110,7 @@ char *exception_messages[] =
     "Reserved"
 };
 
-//all the exception handling routines will point here
+//all the exception handling routines point here for now
 void fault_handler(struct regs *r) {
 	if (r->int_no < 32){
 		vga_print(exception_messages[r->int_no]);

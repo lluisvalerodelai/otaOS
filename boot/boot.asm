@@ -294,7 +294,7 @@ isr_common_stub:
 	push es
 	push fs
 	push gs
-	mov ax, 0x10   ; Load the Kernel Data Segment descriptor!
+	mov ax, 0x10   ; Load the Kernel Data Segment descriptor
 	mov ds, ax
 	mov es, ax
 	mov fs, ax

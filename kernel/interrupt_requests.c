@@ -1,6 +1,5 @@
 #include "interrupt_descriptor_table.h"
 #include "sys.h"
-#include "types.h"
 
 /* the actual implementations for each irq handler from the PICs */
 
