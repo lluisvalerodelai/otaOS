@@ -2,35 +2,11 @@
 #include "types.h"
 
 int width = 80;
-int height = 20;
+int height = 25;
 int curr_row = 0;
 int curr_col = 0;
 
 uint16 *vga = (uint16 *)0xB8000;
-
-/*moves the cursor over by one, checking for if we need to scroll & move down a line*/
-void update_cursor() {
-	if (curr_col == width - 1) {
-		curr_col = 0;
-		if (curr_row == height - 1) {
-			scroll();
-		} else {
-			curr_row += 1;
-		}
-	} else {
-		curr_col += 1;
-	}
-}
-
-void vga_putc(const char c) {
-	if (c == '\n') {
-		newline();
-		return;
-	}
-
-	vga[width * curr_row + curr_col] = (0x07 << 8) | c;
-	update_cursor();
-}
 
 void reset() {
   /* resets the screen, clears all text */
@@ -44,42 +20,38 @@ void reset() {
   curr_row = 0;
 }
 
+void newline() {
+  curr_col = 0;
+	if (curr_row < width) {
+  	curr_row++;
+	} else {
+		scroll();
+		curr_row++;
+	}
+}
+
 void scroll() {
-  // scroll the screen up by one row
-  for (uint8 i = 0; i < height - 1; i++) {
-    for (uint8 j = 0; j < width; j++) {
-      vga[width * i + j] = vga[width * (i + 1) + j];
+  for (int j = 0; j < height; j++) {
+    for (int i = 0; i < width + 1; i++) {
+      vga[(width * j) + i] = vga[(width * (j + 1)) + i];
     }
   }
 }
 
-void newline() {
-  // set the cursor on a newline, and scroll if necessary
-  if (curr_row >= height - 1) {
-    scroll();
-  }
-  curr_col = 0;
-  curr_row++;
+void vga_putc(const char c) {
+  vga[(curr_row * width) + curr_col] = (0x07 << 8) | c;
+  curr_col++;
 }
 
-// also test out removing the \0 after you make the string in kmain
 void vga_print(const char *str) {
   int i = 0;
   while (str[i] != '\0') {
-
     if (str[i] == '\n') {
+      newline();
       i++;
-      newline();
-      continue;
-    }
-
-    vga[curr_row * width + curr_col] = (0x07 << 8) | str[i];
-
-    if (curr_col == width - 1) {
-      newline();
     } else {
-      curr_col += 1;
+      vga_putc(str[i]);
+      i++;
     }
-    i++;
   }
 }
