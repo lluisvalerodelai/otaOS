@@ -22,12 +22,10 @@ void reset() {
 
 void newline() {
   curr_col = 0;
-	if (curr_row < width) {
-  	curr_row++;
-	} else {
+	if (curr_row >= height) {
 		scroll();
-		curr_row++;
 	}
+  curr_row++;
 }
 
 void scroll() {
