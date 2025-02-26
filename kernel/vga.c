@@ -34,6 +34,9 @@ void scroll() {
       vga[(width * j) + i] = vga[(width * (j + 1)) + i];
     }
   }
+	// for (int i = 0; i < width; i++) {
+	// 	vga[width * height + i] = (uint16)0x0;
+	// }
 }
 
 void vga_putc(const char c) {

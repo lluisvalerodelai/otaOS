@@ -12,6 +12,7 @@ KERNEL_OBJS = \
 							interrupt_service_routines_setup.o \
 							interrupt_requests.o \
 							timer.o \
+							keyboard.o \
 							kernel.o
 
 KERNEL_TARGETS = $(addprefix build/kernel/, $(KERNEL_OBJS))

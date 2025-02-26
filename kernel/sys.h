@@ -4,6 +4,7 @@
 void *memset_sys(void *dest, char val, int count);
 
 void outportb(unsigned short port, unsigned char data);
+unsigned char inportb(unsigned short port);
 
 struct regs {
   unsigned int gs, fs, es, ds; /* pushed the segs last */

@@ -2,6 +2,7 @@
 #include "interrupt_descriptor_table.h"
 #include "interrupt_requests.h"
 #include "interrupt_service_routines_setup.h"
+#include "keyboard.h"
 #include "timer.h"
 #include "vga.h"
 
@@ -17,18 +18,14 @@ void kmain() {
 
   vga_print("IDT SUCCESFULLY INSTALLED\n");
 
-  timer_counter_install();
+  // timer_counter_install();
+	keyboard_init();
 
   vga_print("################################\n");
   vga_print("#           otaOS              #\n");
   vga_print("################################\n");
 
   // vga_print((char *) ((int) "hello" / 0));
-
-  vga_print("hello world! \nI just did a newline!");
-	
-	vga_print("hello world!\nhe");
-	scroll();
 
   for (;;)
     ; // safety

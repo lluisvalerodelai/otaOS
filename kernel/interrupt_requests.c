@@ -34,21 +34,25 @@ void irq_uninstall_handler(int irq) { irq_routines[irq] = 0; }
 // we need to remap the irqs from the PICs to higher numbers than 31 so they
 // dont interfere with interrupts we set in the IDT
 
-void irq_remap(void) {
+void PIC_setup(void) {
   outportb(0x20, 0x11);
   outportb(0xA0, 0x11);
+
   outportb(0x21, 0x20);
   outportb(0xA1, 0x28);
+
   outportb(0x21, 0x04);
   outportb(0xA1, 0x02);
+
   outportb(0x21, 0x01);
   outportb(0xA1, 0x01);
+
   outportb(0x21, 0x0);
   outportb(0xA1, 0x0);
 }
 
 void irq_install() {
-  irq_remap(); /*FIRST we remap, then we set the values*/
+  PIC_setup(); /*setup the pic*/
 
   idt_set_gate(32, (unsigned long)irq0, 0x08, 0x8E);
   idt_set_gate(33, (unsigned long)irq1, 0x08, 0x8E);

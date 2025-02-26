@@ -37,7 +37,7 @@ extern void isr30();
 extern void isr31();
 
 void isrs_install() {
-    idt_set_gate(0, (uint32) isr0, 0x08, 0x8E);
+    idt_set_gate(0, (uint32)isr0, 0x08, 0x8E);
     idt_set_gate(1, (uint32)isr1, 0x08, 0x8E);
     idt_set_gate(2, (uint32)isr2, 0x08, 0x8E);
     idt_set_gate(3, (uint32)isr3, 0x08, 0x8E);
