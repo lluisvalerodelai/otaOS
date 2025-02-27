@@ -12,6 +12,7 @@ KERNEL_OBJS = \
 							interrupt_service_routines_setup.o \
 							interrupt_requests.o \
 							timer.o \
+							keyboard_utils.o \
 							keyboard.o \
 							kernel.o
 
