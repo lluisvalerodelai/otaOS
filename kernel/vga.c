@@ -1,4 +1,6 @@
 #include "vga.h"
+#include "sys.h"
+#include "types.h"
 #include "types.h"
 
 #define UP_ARROW 0x06
@@ -13,9 +15,27 @@ int curr_col = 0;
 
 uint16 *vga = (uint16 *)0xB8000;
 
-void render_cursor() { vga[(curr_row * width) + curr_col] = 0xFFFF; }
+void disable_cursor() {
+  outportb(0x3D4, 0x0A);
+  outportb(0x3D5, 0x20);
+}
 
-void clear_cursor() { vga[(curr_row * width) + curr_col] = (uint16)0x0; }
+void enable_cursor(uint8 cursor_start, uint8 cursor_end) {
+  outportb(0x3D4, 0x0A);
+  outportb(0x3D5, (inportb(0x3D5) & 0xC0) | cursor_start);
+
+  outportb(0x3D4, 0x0B);
+  outportb(0x3D5, (inportb(0x3D5) & 0xE0) | cursor_end);
+}
+
+void update_cursor(int row, int column) {
+  int16 pos = row * width + column;
+
+  outportb(0x3D4, 0x0F);
+  outportb(0x3D5, (uint8)(pos & 0xFF));
+  outportb(0x3D4, 0x0E);
+  outportb(0x3D5, (uint8)((pos >> 8) & 0xFF));
+}
 
 void reset() {
   /* resets the screen, clears all text */
@@ -49,11 +69,9 @@ void scroll() {
 }
 
 void vga_putc(const char c) {
-  clear_cursor();
-
   if (c == '\n') {
     newline();
-    render_cursor();
+		update_cursor(curr_row, curr_col);
     return;
   }
 
@@ -66,15 +84,15 @@ void vga_putc(const char c) {
     }
 
     vga[(curr_row * width) + curr_col] = (0x07 << 8) | 0;
-    render_cursor();
+		update_cursor(curr_row, curr_col);
     return;
   }
 
   if (c == UP_ARROW) {
-    if (curr_row > 0) {
+    if (curr_row >= 0) {
       curr_row--;
     }
-    render_cursor();
+		update_cursor(curr_row, curr_col);
     return;
   }
 
@@ -82,7 +100,7 @@ void vga_putc(const char c) {
     if (curr_row < height) {
       curr_row++;
     }
-    render_cursor();
+		update_cursor(curr_row, curr_col);
     return;
   }
 
@@ -90,7 +108,7 @@ void vga_putc(const char c) {
     if (curr_col > 0) {
       curr_col--;
     }
-    render_cursor();
+		update_cursor(curr_row, curr_col);
     return;
   }
 
@@ -98,14 +116,14 @@ void vga_putc(const char c) {
     if (curr_col < width) {
       curr_col++;
     }
-    render_cursor();
+		update_cursor(curr_row, curr_col);
     return;
   }
 
   vga[(curr_row * width) + curr_col] = (0x07 << 8) | c;
   curr_col++;
 
-  render_cursor();
+	update_cursor(curr_row, curr_col);
 }
 
 void vga_print(const char *str) {

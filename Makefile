@@ -36,7 +36,7 @@ build: $(LINK_OBJS) linker.ld
 	grub-mkrescue -o kernel.iso otaOS/
 	
 run:
-	qemu-system-i386 kernel.iso
+	qemu-system-i386 -drive file=kernel.iso,format=raw 
 
 clean:
 	rm -rf build kernel.iso otaOS
