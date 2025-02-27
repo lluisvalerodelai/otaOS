@@ -5,14 +5,16 @@
 
 #define SHIFT 0x2A
 #define CAPS_LOCK 0x3A
+#define ALT 0x38
 
 /*
         reference: https://wiki.osdev.org/PS/2_Keyboard for the scancode numbers
 */
 
-/*keeps track of if shift was held down, and the caps lock setting*/
+/*keeps track of the current layer of the keyboard, eg shift layer, alt layer, etc*/
 struct kb_state_t {
   int shift;
+	int alt;
   /*char[num_keys] uppercase*/
   /*char[num_keys] lowercase*/
 };

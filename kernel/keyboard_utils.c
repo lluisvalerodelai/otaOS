@@ -11,7 +11,7 @@ void set_lower_scan_codes(char scancodes[255]) {
   scancodes[0x09] = '8';
   scancodes[0x0A] = '9';
   scancodes[0x0B] = '0';
-  scancodes[0x0C] = '-';
+  scancodes[0x0C] = '\'';
   scancodes[0x0D] = '=';
   scancodes[0x0E] = '\b';
   scancodes[0x0F] = '\t';
@@ -37,7 +37,7 @@ void set_lower_scan_codes(char scancodes[255]) {
   scancodes[0x24] = 'j';
   scancodes[0x25] = 'k';
   scancodes[0x26] = 'l';
-  scancodes[0x27] = ';';
+  scancodes[0x27] = '+';
   scancodes[0x28] = '\'';
   scancodes[0x29] = '`';
   scancodes[0x2B] = '\\';
@@ -52,6 +52,15 @@ void set_lower_scan_codes(char scancodes[255]) {
   scancodes[0x34] = '.';
   scancodes[0x35] = '-';
   scancodes[0x39] = ' ';
+  scancodes[0x48] = 0x06; //up arrow (numpad)
+  scancodes[0x4D] = 0x05; //right arrow (numpad)
+  scancodes[0x4B] = 0x04; //left arrow (numpad)
+  scancodes[0x4C] = 0x03; //down arrow (numpad)
+  // scancodes[0x50] = '2'; 
+  // scancodes[0x49] = '9';
+  // scancodes[0x47] = '7';
+  // scancodes[0x51] = '3';
+  // scancodes[0x4F] = '1';
 }
 
 void set_upper_scan_codes(char scancodes[255]) {
@@ -91,7 +100,7 @@ void set_upper_scan_codes(char scancodes[255]) {
   scancodes[0x24] = 'J';
   scancodes[0x25] = 'K';
   scancodes[0x26] = 'L';
-  scancodes[0x27] = ';';
+  scancodes[0x27] = '*';
   scancodes[0x28] = '\'';
   scancodes[0x29] = '`';
   scancodes[0x2B] = '\\';
