@@ -1,6 +1,11 @@
 #include "vga.h"
 #include "types.h"
 
+#define UP_ARROW 0x06
+#define DOWN_ARROW 0x03
+#define LEFT_ARROW 0x04
+#define RIGHT_ARROW 0x05
+
 int width = 80;
 int height = 25;
 int curr_row = 0;
@@ -8,13 +13,9 @@ int curr_col = 0;
 
 uint16 *vga = (uint16 *)0xB8000;
 
-void render_cursor() {
-	vga[(curr_row * width) + curr_col] = 0xFFFF;	
-}
+void render_cursor() { vga[(curr_row * width) + curr_col] = 0xFFFF; }
 
-void clear_cursor() {
-	vga[(curr_row * width) + curr_col] = (uint16) 0x0;	
-}
+void clear_cursor() { vga[(curr_row * width) + curr_col] = (uint16)0x0; }
 
 void reset() {
   /* resets the screen, clears all text */
@@ -48,11 +49,11 @@ void scroll() {
 }
 
 void vga_putc(const char c) {
-	clear_cursor();
+  clear_cursor();
 
   if (c == '\n') {
     newline();
-		render_cursor();
+    render_cursor();
     return;
   }
 
@@ -60,19 +61,51 @@ void vga_putc(const char c) {
     if (curr_col > 0) {
       curr_col--;
     } else if (curr_row > 0) {
-			curr_col = width;
+      curr_col = width;
       curr_row--;
     }
 
     vga[(curr_row * width) + curr_col] = (0x07 << 8) | 0;
-		render_cursor();
+    render_cursor();
+    return;
+  }
+
+  if (c == UP_ARROW) {
+    if (curr_row > 0) {
+      curr_row--;
+    }
+    render_cursor();
+    return;
+  }
+
+  if (c == DOWN_ARROW) {
+    if (curr_row < height) {
+      curr_row++;
+    }
+    render_cursor();
+    return;
+  }
+
+  if (c == LEFT_ARROW) {
+    if (curr_col > 0) {
+      curr_col--;
+    }
+    render_cursor();
+    return;
+  }
+
+  if (c == RIGHT_ARROW) {
+    if (curr_col < width) {
+      curr_col++;
+    }
+    render_cursor();
     return;
   }
 
   vga[(curr_row * width) + curr_col] = (0x07 << 8) | c;
   curr_col++;
 
-	render_cursor();
+  render_cursor();
 }
 
 void vga_print(const char *str) {
