@@ -1,6 +1,7 @@
-build
-isofiles
+/build/
+/isofiles/
 iso.img
+*.iso
 *.o
 *.elf
-otaOS
+/otaOS/
