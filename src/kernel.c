@@ -6,6 +6,7 @@
 #include "keyboard.h"
 #include "timer.h"
 #include "vga.h"
+#include "format_print.h"
 
 void kmain() {
 
@@ -34,9 +35,14 @@ void kmain() {
 
 	uint16 vendor = pciCheckVendor(0, 2);
 	if (vendor == 0x1234) {
-		vga_print("returned woahhh\n");
+		vga_print("actually something, time to implement printf yay\n");
 	} else {
-		vga_print("actually something, time to implement printf yay");
+		vga_print("nada \n");
+	}
+
+	char str_buf[15];
+	if (printf_str("here is a % nnn", int_to_string(0, str_buf)) > 0) {
+		vga_print("printf failed\n");
 	}
 
   for (;;)

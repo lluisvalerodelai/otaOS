@@ -2,6 +2,7 @@
 #include "keyboard_utils.h"
 #include "sys.h"
 #include "vga.h"
+#include "keyboard.h"
 
 #define SHIFT 0x2A
 #define CAPS_LOCK 0x3A

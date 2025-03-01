@@ -44,4 +44,3 @@ uint16 pciCheckVendor(uint8 bus, uint8 slot) {
   }
   return (vendor);
 }
-
