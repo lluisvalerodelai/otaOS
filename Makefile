@@ -28,12 +28,14 @@ build/boot/%.o: boot/%.asm
 	mkdir -p build/boot
 	nasm $(AFLAGS) $< -o $@
 
-build/%.o: src/%.c
+buildprep:
 	mkdir -p build/interrupts #TODO: find a better way of doing this. this sucks.
 	mkdir -p build/devices/keyboard #theres no need to recereate the whole src directory here
 	mkdir -p build/devices/video_graphics_array #just dump all .o files in one place
 	mkdir -p build/devices/timer
 	mkdir -p build/sys
+
+build/%.o: src/%.c | buildprep
 	gcc $(CFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
 build: $(LINK_OBJS) linker.ld
