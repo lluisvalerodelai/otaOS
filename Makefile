@@ -9,6 +9,7 @@ BOOT_TARGETS = $(addprefix build/boot/, $(BOOT_OBJS))
 
 KERNEL_OBJS = \
 							sys/sys.o \
+							sys/format_print.o \
 							devices/video_graphics_array/vga.o \
 							global_descriptor_table.o \
 							interrupts/interrupt_descriptor_table.o \
