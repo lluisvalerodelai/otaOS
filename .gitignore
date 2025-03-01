@@ -1,7 +1,9 @@
 /build/
 /isofiles/
+/.cache/
 iso.img
 *.iso
 *.o
 *.elf
+compile_commands.json
 /otaOS/
