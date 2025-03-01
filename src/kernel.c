@@ -4,7 +4,7 @@
 #include "interrupt_service_routines_setup.h"
 #include "peripheral_component_interconnect.h"
 #include "keyboard.h"
-// #include "timer.h"
+#include "timer.h"
 #include "vga.h"
 
 void kmain() {
