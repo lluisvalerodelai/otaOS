@@ -14,6 +14,7 @@ KERNEL_OBJS = \
 							timer.o \
 							keyboard_utils.o \
 							keyboard.o \
+							peripheral_component_interconnect.o \
 							kernel.o
 
 KERNEL_TARGETS = $(addprefix build/kernel/, $(KERNEL_OBJS))
