@@ -44,15 +44,20 @@ uint8 printf_str(const char *str, char *ext) {
   return 0;
 }
 
-char *int_to_string(int num, char *str_buf) {
+char *num_to_string(int num, uint8 base, char *str_buf) {
 
-	if (num == 0) {
-		return "0";
-	}
+  if (num == 0) {
+    return "0";
+  }
 
   uint8 buf_i = 0;
   uint8 num_i = 0;
   char num_buf[15];
+
+	if (base == 16) {
+		str_buf[buf_i++] = '0';
+		str_buf[buf_i++] = 'x';
+	}
 
   if (num < 0) {
     str_buf[buf_i++] = '-';
@@ -63,50 +68,18 @@ char *int_to_string(int num, char *str_buf) {
     if (num_i > 15) {
       break;
     }
-    int last_digit = num % 10;
-
-    switch (last_digit) { // yes I know I should use ascii(0) + offset. shut up
-    case 0:
-      num_c = '0';
-      break;
-    case 1:
-      num_c = '1';
-      break;
-    case 2:
-      num_c = '2';
-      break;
-    case 3:
-      num_c = '3';
-      break;
-    case 4:
-      num_c = '4';
-      break;
-    case 5:
-      num_c = '5';
-      break;
-    case 6:
-      num_c = '6';
-      break;
-    case 7:
-      num_c = '7';
-      break;
-    case 8:
-      num_c = '8';
-      break;
-    case 9:
-      num_c = '9';
-      break;
-    }
-    num_buf[num_i++] = num_c;
-    num = num / 10; // its int so floor divides automatically
+    int last_digit = num % base;
+		num_c = (last_digit < 10) ? ('0' + last_digit) : ('A' + last_digit - 10); //fine
+		num_buf[num_i++] = num_c;
+		num = num / base;
   }
 
-	for (int i = num_i - 1; i >= 0; i--) {
-		if (buf_i > 15) {
-			break;
-		}
-		str_buf[buf_i++] = num_buf[i];
-	}
+  for (int i = num_i - 1; i >= 0; i--) {
+    if (buf_i > 15) {
+      break;
+    }
+    str_buf[buf_i++] = num_buf[i];
+  }
 
   str_buf[buf_i] = '\0';
   return str_buf;
