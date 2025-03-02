@@ -1,4 +1,5 @@
 #include "peripheral_component_interconnect.h"
+#include "format_print.h"
 #include "sys.h"
 #include "types.h"
 
@@ -15,11 +16,11 @@
  * +----------+----------+------------+-------------+--------------+--------+
  */
 
-uint16 pciConfigReadWord(uint8 bus, uint8 slot, uint8 func, uint8 offset) {
+uint16 pciConfigReadWord(uint8 bus, uint8 device, uint8 func, uint8 offset) {
   uint32 address; // the address offset to get to the 256 byte region that is
                   // allocated for some specific device on the PCI
   uint32 lbus = (uint32)bus;
-  uint32 lslot = (uint32)slot;
+  uint32 lslot = (uint32)device;
   uint32 lfunc = (uint32)func;
   uint16 tmp = 0;
 
@@ -34,13 +35,53 @@ uint16 pciConfigReadWord(uint8 bus, uint8 slot, uint8 func, uint8 offset) {
   return tmp;
 }
 
-uint16 pciCheckVendor(uint8 bus, uint8 slot) {
-  uint16 vendor, device;
+/*return the vendor and write the device ID (if vendor was found)*/
+uint16 pciGetVD(uint8 bus, uint8 device, uint8 function, uint16 *deviceID) {
+  uint16 vendor;
   /* Try and read the first configuration register. Since there are no
    * vendors that == 0xFFFF, it must be a non-existent device. */
 
-  if ((vendor = pciConfigReadWord(bus, slot, 0, 0)) != 0xFFFF) {
-    device = pciConfigReadWord(bus, slot, 0, 2); // TODO: return device too xD
+  if ((vendor = pciConfigReadWord(bus, device, function, 0)) != 0xFFFF) {
+    *deviceID =
+        pciConfigReadWord(bus, device, function, 2); // TODO: return device too xD
   }
   return (vendor);
 }
+
+void pciPrintInfo(uint8 bus, uint8 device, uint8 function) {
+  uint16 deviceID;
+  uint16 vendorID = pciGetVD(bus, device, function, &deviceID);
+
+  // if the device doesent exist, just return
+  if (vendorID == 0xFFFF)
+    return;
+
+  char str_buf[15];
+  printf_str("bus % ", num_to_string(bus, 10, str_buf));
+  printf_str("device % ", num_to_string(device, 10, str_buf));
+  printf_str("function % ", num_to_string(function, 10, str_buf));
+
+  printf_str("vendor ID: % ", num_to_string(vendorID, 16, str_buf));
+  printf_str("device ID: % \n", num_to_string(deviceID, 16, str_buf));
+
+  // otherwise check if its a multifunction device, and if it is loop through
+  // all the functions
+}
+
+uint16 pciGetVendorID(uint8 bus, uint8 device, uint8 function) {
+  // uint8 function = 0;
+
+  uint16 deviceID;
+  uint16 vendorID = pciGetVD(bus, device, function, &deviceID);
+
+	return vendorID;
+}
+
+uint16 pciGetDeviceID(uint8 bus, uint8 device, uint8 function) {
+
+  uint16 deviceID;
+  pciGetVD(bus, device, function, &deviceID);
+
+	return deviceID;
+}
+
