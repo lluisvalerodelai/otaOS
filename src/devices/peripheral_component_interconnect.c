@@ -16,12 +16,21 @@
  * +----------+----------+------------+-------------+--------------+--------+
  */
 
-uint16 pciConfigReadWord(uint8 bus, uint8 device, uint8 func, uint8 offset) {
+struct PCI_BDF init_PCI_BDF(uint8 bus, uint8 device, uint8 func) {
+  struct PCI_BDF pci_device = {.device_ID = 0,
+                               .device_ID = 0,
+                               .bus = bus,
+                               .device = device,
+                               .func = func};
+  return pci_device;
+}
+
+uint16 pciConfigReadWord(struct PCI_BDF pci_device, uint8 offset) {
   uint32 address; // the address offset to get to the 256 byte region that is
                   // allocated for some specific device on the PCI
-  uint32 lbus = (uint32)bus;
-  uint32 lslot = (uint32)device;
-  uint32 lfunc = (uint32)func;
+  uint32 lbus = (uint32)pci_device.bus;
+  uint32 lslot = (uint32)pci_device.device;
+  uint32 lfunc = (uint32)pci_device.func;
   uint16 tmp = 0;
 
   address = (uint32)((lbus << 16) | (lslot << 11) | (lfunc << 8) |
@@ -35,53 +44,37 @@ uint16 pciConfigReadWord(uint8 bus, uint8 device, uint8 func, uint8 offset) {
   return tmp;
 }
 
-/*return the vendor and write the device ID (if vendor was found)*/
-uint16 pciGetVD(uint8 bus, uint8 device, uint8 function, uint16 *deviceID) {
-  uint16 vendor;
-  /* Try and read the first configuration register. Since there are no
-   * vendors that == 0xFFFF, it must be a non-existent device. */
-
-  if ((vendor = pciConfigReadWord(bus, device, function, 0)) != 0xFFFF) {
-    *deviceID =
-        pciConfigReadWord(bus, device, function, 2); // TODO: return device too xD
+uint8 pciIsValid(struct PCI_BDF device) {
+  if (pciConfigReadWord(device, 0) != 0xFFFF) {
+    return 1;
+  } else {
+    return 0;
   }
-  return (vendor);
 }
 
-void pciPrintInfo(uint8 bus, uint8 device, uint8 function) {
-  uint16 deviceID;
-  uint16 vendorID = pciGetVD(bus, device, function, &deviceID);
+/*return the vendor and write the device ID (if vendor was found)*/
+void pci_fill_info(struct PCI_BDF *device) {
+	//using hex for offset for consistency with table
+  device->vendor_ID = pciConfigReadWord(*device, 0x0);
+  device->device_ID = pciConfigReadWord(*device, 0x2);
+  device->header_type = (uint8) (pciConfigReadWord(*device, 0xE));
+}
+
+void pciPrintInfo(struct PCI_BDF device) {
 
   // if the device doesent exist, just return
-  if (vendorID == 0xFFFF)
+  if (device.device_ID == 0xFFFF)
     return;
 
   char str_buf[15];
-  printf_str("bus % ", num_to_string(bus, 10, str_buf));
-  printf_str("device % ", num_to_string(device, 10, str_buf));
-  printf_str("function % ", num_to_string(function, 10, str_buf));
+  printf_str("bus % ", num_to_string(device.bus, 10, str_buf));
+  printf_str("device % ", num_to_string(device.device, 10, str_buf));
+  printf_str("function % ", num_to_string(device.func, 10, str_buf));
 
-  printf_str("vendor ID: % ", num_to_string(vendorID, 16, str_buf));
-  printf_str("device ID: % \n", num_to_string(deviceID, 16, str_buf));
+  printf_str("vendor ID: % ", num_to_string(device.vendor_ID, 16, str_buf));
+  printf_str("device ID: % ", num_to_string(device.device_ID, 16, str_buf));
+  printf_str("Header type: % \n", num_to_string(device.header_type, 16, str_buf));
 
   // otherwise check if its a multifunction device, and if it is loop through
   // all the functions
 }
-
-uint16 pciGetVendorID(uint8 bus, uint8 device, uint8 function) {
-  // uint8 function = 0;
-
-  uint16 deviceID;
-  uint16 vendorID = pciGetVD(bus, device, function, &deviceID);
-
-	return vendorID;
-}
-
-uint16 pciGetDeviceID(uint8 bus, uint8 device, uint8 function) {
-
-  uint16 deviceID;
-  pciGetVD(bus, device, function, &deviceID);
-
-	return deviceID;
-}
-

@@ -3,12 +3,20 @@
 
 #include "types.h"
 
-uint16 pciConfigReadWord(uint8 bus, uint8 device, uint8 func, uint8 offset);
-uint16 pciGetVD(uint8 bus, uint8 device, uint8 function, uint16* deviceID);
-uint16 pciCheckClassCode(uint8 bus, uint8 device, uint8 function);
-void pciPrintInfo(uint8 bus, uint8 device, uint8 function);
-uint16 pciGetVendorID(uint8 bus, uint8 device, uint8 function);
-uint16 pciGetDeviceID(uint8 bus, uint8 device, uint8 function);;
+struct PCI_BDF {
+	uint16 vendor_ID;
+	uint16 device_ID;
+	uint8 header_type;
+	uint8 bus;
+	uint8 device;
+	uint8 func;
+};
+
+struct PCI_BDF init_PCI_BDF(uint8 bus, uint8 device, uint8 func);
+uint16 pciConfigReadWord(struct PCI_BDF pci_device, uint8 offset);
+uint8 pciIsValid(struct PCI_BDF device);
+void pci_fill_info(struct PCI_BDF *device);
+void pciPrintInfo(struct PCI_BDF device);
 
 #endif // ! __PCI_H
 
