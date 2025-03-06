@@ -44,6 +44,10 @@ uint8 printf_str(const char *str, char *ext) {
   return 0;
 }
 
+/*
+ * TODO: bug -> int is implicit to uint32, so this will not print anything with width > 32
+ * int64s are not printed
+ * */
 char *num_to_string(int num, uint8 base, char *str_buf) {
 
   if (num == 0) {

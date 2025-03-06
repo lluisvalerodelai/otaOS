@@ -61,6 +61,12 @@ void pci_fill_info(struct pci_device_t *device) {
   device->header_type = (uint8)(pciConfigReadWord(*device, 0xE));
 }
 
+uint64 pci_get_BAR(struct pci_device_t device) {
+  uint32 bar_low = pciConfigReadWord(device, 0x10);
+  uint32 bar_high = pciConfigReadWord(device, 0x12);
+  return (uint64)bar_high | bar_low;
+}
+
 void pciPrintInfo(struct pci_device_t device) {
 
   // if the device doesent exist, just return
@@ -74,13 +80,12 @@ void pciPrintInfo(struct pci_device_t device) {
 
   printf_str("vendor ID: % ", num_to_string(device.vendor_ID, 16, str_buf));
   printf_str("device ID: % ", num_to_string(device.device_ID, 16, str_buf));
-  printf_str("Header type: % ", num_to_string(device.header_type, 16, str_buf));
-
+  printf_str("Header type: % \n",
+             num_to_string(device.header_type, 16, str_buf));
   printf_str("class code: % \n",
              num_to_string(pciConfigReadWord(device, 0xA), 16, str_buf));
+  printf_str("BAR0: % \n", num_to_string(pci_get_BAR(device), 16, str_buf));
 
   // otherwise check if its a multifunction device, and if it is loop through
   // all the functions
 }
-
-void printf(char str, ...) { vga_print("ooooh\n"); }
