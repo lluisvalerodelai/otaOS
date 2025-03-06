@@ -25,12 +25,15 @@ void kmain() {
   vga_print("#           otaOS              #\n");
   vga_print("################################\n");
 
-	pciPrintInfo(0, 0, 0);
-	pciPrintInfo(0, 1, 0);
-	pciPrintInfo(0, 1, 1);
-	pciPrintInfo(0, 1, 3);
-	pciPrintInfo(0, 2, 0);
-	pciPrintInfo(0, 3, 0);
+	for (int bus = 0; bus < 255; bus++) {
+		for (int dev = 0; dev < 32; dev++) {
+			for (int func = 0; func < 8; func++) {
+				struct pci_device_t foo = init_PCI_BDF(bus, dev, func); 
+				pci_fill_info(&foo);
+				pciPrintInfo(foo);
+			}
+		}
+	}
 
   for (;;)
     ; // safety

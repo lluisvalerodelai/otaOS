@@ -1,7 +1,6 @@
 #include "vga.h"
 #include "sys.h"
 #include "types.h"
-#include "types.h"
 
 #define UP_ARROW 0x06
 #define DOWN_ARROW 0x03
@@ -63,15 +62,25 @@ void scroll() {
       vga[(width * j) + i] = vga[(width * (j + 1)) + i];
     }
   }
-  // for (int i = 0; i < width; i++) {
-  // 	vga[width * height + i] = (uint16)0x0;
-  // }
+
+  for (int i = 0; i < width; i++) {
+    vga[width * height + i] = (uint16)0x0;
+  }
+
+  curr_col = 0;
+  curr_row = height - 1;
 }
 
 void vga_putc(const char c) {
+
+  if (curr_col == width) {
+    newline();
+    update_cursor(curr_row, curr_col);
+  }
+
   if (c == '\n') {
     newline();
-		update_cursor(curr_row, curr_col);
+    update_cursor(curr_row, curr_col);
     return;
   }
 
@@ -84,7 +93,7 @@ void vga_putc(const char c) {
     }
 
     vga[(curr_row * width) + curr_col] = (0x07 << 8) | 0;
-		update_cursor(curr_row, curr_col);
+    update_cursor(curr_row, curr_col);
     return;
   }
 
@@ -92,7 +101,7 @@ void vga_putc(const char c) {
     if (curr_row >= 0) {
       curr_row--;
     }
-		update_cursor(curr_row, curr_col);
+    update_cursor(curr_row, curr_col);
     return;
   }
 
@@ -100,7 +109,7 @@ void vga_putc(const char c) {
     if (curr_row < height) {
       curr_row++;
     }
-		update_cursor(curr_row, curr_col);
+    update_cursor(curr_row, curr_col);
     return;
   }
 
@@ -108,7 +117,7 @@ void vga_putc(const char c) {
     if (curr_col > 0) {
       curr_col--;
     }
-		update_cursor(curr_row, curr_col);
+    update_cursor(curr_row, curr_col);
     return;
   }
 
@@ -116,14 +125,14 @@ void vga_putc(const char c) {
     if (curr_col < width) {
       curr_col++;
     }
-		update_cursor(curr_row, curr_col);
+    update_cursor(curr_row, curr_col);
     return;
   }
 
   vga[(curr_row * width) + curr_col] = (0x07 << 8) | c;
   curr_col++;
 
-	update_cursor(curr_row, curr_col);
+  update_cursor(curr_row, curr_col);
 }
 
 void vga_print(const char *str) {
