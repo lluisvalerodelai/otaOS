@@ -5,6 +5,7 @@
 #include "peripheral_component_interconnect.h"
 #include "keyboard.h"
 #include "vga.h"
+#include "vga_driver.h"
 
 void kmain() {
 
@@ -34,6 +35,15 @@ void kmain() {
 			}
 		}
 	}
+
+	// pci_main();	
+	set_mode(320, 200, 8);
+	for (uint32 y = 0; y < 200; y++) {
+		for (uint32 x = 0; x < 320; x++) {
+			put_pixel(x, y, 0x00, 0x00, 0xA8);
+		}	
+	}
+
 
   for (;;)
     ; // safety

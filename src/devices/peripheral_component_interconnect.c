@@ -2,7 +2,6 @@
 #include "format_print.h"
 #include "sys.h"
 #include "types.h"
-#include "vga.h"
 
 #define PCI_CONFIG_ADDRESS 0XCF8 // two 32 bit IO locations
 #define PCI_CONFIG_DATA 0XCFC
@@ -45,6 +44,29 @@ uint16 pciConfigReadWord(struct pci_device_t pci_device, uint8 offset) {
   return tmp;
 }
 
+void pciConfigWriteWord(struct pci_device_t pci_device, uint8 offset,
+                        uint16 value) {
+  uint32 address; // the address offset to get to the 256 byte region that is
+                  // allocated for some specific device on the PCI
+  uint32 lbus = (uint32)pci_device.bus;
+  uint32 lslot = (uint32)pci_device.device;
+  uint32 lfunc = (uint32)pci_device.func;
+
+  address = (uint32)((lbus << 16) | (lslot << 11) | (lfunc << 8) |
+                     (offset & 0xFC) | ((uint32)0x80000000));
+
+  // tell the pci device to use this one
+  outportl(0xCF8, address);
+
+  uint32 current_value = inportl(0xCFC);
+
+  current_value &= ~(0xFFFF << ((offset & 2) * 8)); // Clear the old bits
+  current_value |= (value << ((offset & 2) * 8));   // Set the new bits
+
+  // write what we want to write to it
+  outportl(0xCFC, current_value);
+}
+
 uint8 pciIsValid(struct pci_device_t device) {
   if (pciConfigReadWord(device, 0) != 0xFFFF) {
     return 1;
@@ -61,10 +83,14 @@ void pci_fill_info(struct pci_device_t *device) {
   device->header_type = (uint8)(pciConfigReadWord(*device, 0xE));
 }
 
-uint64 pci_get_BAR(struct pci_device_t device) {
-  uint32 bar_low = pciConfigReadWord(device, 0x10);
+uint32 pci_get_BAR_high(struct pci_device_t device) {
   uint32 bar_high = pciConfigReadWord(device, 0x12);
-  return (uint64)bar_high | bar_low;
+  return bar_high;
+}
+
+uint32 pci_get_BAR_low(struct pci_device_t device) {
+  uint32 bar_low = pciConfigReadWord(device, 0x10);
+  return bar_low;
 }
 
 void pciPrintInfo(struct pci_device_t device) {
@@ -84,7 +110,8 @@ void pciPrintInfo(struct pci_device_t device) {
              num_to_string(device.header_type, 16, str_buf));
   printf_str("class code: % \n",
              num_to_string(pciConfigReadWord(device, 0xA), 16, str_buf));
-  printf_str("BAR0: % \n", num_to_string(pci_get_BAR(device), 16, str_buf));
+  printf_str("BAR: %", num_to_string(pci_get_BAR_high(device), 16, str_buf));
+  printf_str("%\n", num_to_string(pci_get_BAR_low(device), 16, str_buf));
 
   // otherwise check if its a multifunction device, and if it is loop through
   // all the functions
