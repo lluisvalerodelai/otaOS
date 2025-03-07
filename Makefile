@@ -19,6 +19,7 @@ KERNEL_OBJS = \
 							devices/keyboard/keyboard_utils.o \
 							devices/keyboard/keyboard.o \
 							devices/peripheral_component_interconnect.o \
+							devices/video_graphics_array/vga_driver.o \
 							kernel.o
 
 KERNEL_TARGETS = $(addprefix build/, $(KERNEL_OBJS))
