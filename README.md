@@ -1,6 +1,6 @@
 # ToyKernel
 
-A minimal educational kernel designed to explore low-level operating system concepts such as memory management, interrupt handling, hardware interaction, and device drivers.
+A minimalkernel designed to explore low-level operating system concepts such as memory management, interrupt handling, hardware interaction, and device drivers.
 I implemented this kernel while reading through the book [operating systems: 3 pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/)
 
 ## Features
