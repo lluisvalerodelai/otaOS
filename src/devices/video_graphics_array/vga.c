@@ -36,6 +36,13 @@ void update_cursor(int row, int column) {
   outportb(0x3D5, (uint8)((pos >> 8) & 0xFF));
 }
 
+void render_prompt() {
+  vga[(curr_row * width) + curr_col] =
+      (0x07 << 8) | '>'; // must be this instead of putchar otherwise theres
+                         // funky recursive business
+  curr_col++;
+}
+
 void reset() {
   /* resets the screen, clears all text */
   for (uint8 i = 0; i < height; i++) {
@@ -46,6 +53,7 @@ void reset() {
 
   curr_col = 0;
   curr_row = 0;
+  render_prompt();
 }
 
 void newline() {
@@ -80,16 +88,14 @@ void vga_putc(const char c) {
 
   if (c == '\n') {
     newline();
+    render_prompt();
     update_cursor(curr_row, curr_col);
     return;
   }
 
   if (c == '\b') {
-    if (curr_col > 0) {
+    if (curr_col > 1) {
       curr_col--;
-    } else if (curr_row > 0) {
-      curr_col = width;
-      curr_row--;
     }
 
     vga[(curr_row * width) + curr_col] = (0x07 << 8) | 0;
