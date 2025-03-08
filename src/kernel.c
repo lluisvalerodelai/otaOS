@@ -1,4 +1,8 @@
-// #define graphics_demo
+
+
+
+// #define graphics_demo    /*uncomment to see graphics demo*/
+
 #include "global_descriptor_table.h"
 #include "interrupt_descriptor_table.h"
 #include "interrupt_requests.h"
@@ -51,8 +55,6 @@ void kmain() {
   }
 
 #endif /* ifdef graphics_demo */
-	
-	reset();
 
   for (;;)
     ; // safety
