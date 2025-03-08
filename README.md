@@ -28,10 +28,9 @@ To build and run the kernel, you need the following tools:
 ### Installation
 
 #### 1. Clone the Repository
-Clone the repository to your local machine:
 ```bash
-git clone https://github.com/yourusername/toy-kernel.git
-cd toy-kernel
+git clone https://github.com/lluisvalerodelai/otaOS
+cd otaOS
 ```
 
 #### 2. Build with Make
